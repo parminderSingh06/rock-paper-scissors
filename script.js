@@ -1,64 +1,69 @@
-function getComputerChoice()
+function game()
 {
-    const choices = ["Rock", "Paper", "Scissor"];
-    let random_choice = Math.floor(Math.random() * choices.length);
-    let computer_choice = choices[random_choice].toLowerCase();
-    return computer_choice;
-}
-
-function getPlayerChoice()
-{
-    while(true)
+    let player_score = 0;
+    let computer_score = 0;
+    let view = document.querySelector('#intro');
+        let info_txt = document.createElement('div');
+        info_txt.classList.toggle('info_txt');
+        view.append(info_txt);
+    let  buttons = document.querySelectorAll('.choices');
+    for(let i=0;i<buttons.length;i++)
     {
-        const input = prompt("Choose Rock, Paper, Scissor");
-        let player_choice = input.toLowerCase()
-        if(player_choice == 'rock' || player_choice == 'paper' || player_choice == 'scissor')
+        buttons[i].addEventListener('click',function(){
+            let player_choice = buttons[i].textContent;
+            let p_select = document.querySelector('#player');
+            p_select.textContent = 'PLAYER CHOICE: ';
+            p_select.textContent += buttons[i].textContent;
+            player_choice = player_choice.toLowerCase();
+            let computer_choice = getComputerChoice();
+            playRound(player_choice,computer_choice);
+        });
+    }
+
+
+    function getComputerChoice()
+    {
+        const choices = ["ROCK", "PAPER", "SCISSOR"];
+        let random_choice = Math.floor(Math.random() * choices.length);
+        let c_select = document.querySelector('#computer');
+        c_select.textContent = 'COMPUTER CHOICE: ';
+        c_select.textContent += choices[random_choice];
+        let temp = choices[random_choice].toLowerCase();
+        return temp;
+    }
+
+    function playRound(player_choice, computer_choice)
+    {
+        info_txt.textContent = "";
+        if(player_choice == computer_choice)
         {
-            return player_choice;
+            info_txt.textContent = "IT'S A TIE THIS TURN";
+        }
+        else if(player_choice == "rock" && computer_choice == "scissor" || player_choice == "scissor" && computer_choice == "paper" || player_choice == "paper" && computer_choice == "rock")
+        {
+            info_txt.textContent = "YOU WIN THIS TURN";
+            player_score++;
+            let p_score = document.querySelector("#player_score");
+            p_score.textContent = "YOUR SCORE:";
+            p_score.textContent += player_score;
         }
         else
         {
-            alert("Invalid Input! Try Again.");
-        }
-    }
-}
-
-function playRound(player_choice, computer_choice)
-{
-    console.log(`Your Choice: ${player_choice}\nComputer Choice: ${computer_choice}`);
-    if(player_choice == computer_choice)
-    {
-        console.log("Its a Tie");
-        return 0;
-    }
-    else if(player_choice == "rock" && computer_choice == "scissor" || player_choice == "scissor" && computer_choice == "paper" || player_choice == "paper" && computer_choice == "rock")
-    {
-        console.log("You Win");
-        return 1;
-    }
-    else
-    {
-        console.log("You Lost");
-        return 2;
-    }
-
-}
-
-function game()
-{
-    let computer_score = 0;
-    let player_score = 0;
-    for(let i=0;i<5;i++)
-    {
-        console.log(`[Player Score: ${player_score} || Computer Score:${computer_score}]`)
-        let result = playRound(getPlayerChoice(), getComputerChoice());
-        if(result == 1)
-        {
-            player_score++;
-        }
-        else if(result == 2)
-        {
+            info_txt.textContent = "YOU LOSE THIS TURN"
             computer_score++;
+            let c_score = document.querySelector("#computer_score");
+            c_score.textContent = "COMPUTER SCORE:";
+            c_score.textContent += computer_score;
+        }
+        if(player_score >= 5)
+        {
+            document.querySelector('.game').style.visibility = "hidden";
+            document.querySelector("#intro").textContent = "CONGRATS YOU HAVE BEAT THE COMPUTER";
+        }
+        else if(computer_score >= 5)
+        {
+            document.querySelector('.game').style.visibility = "hidden";
+            document.querySelector("#intro").textContent = 'YOU HAVE BEEN DEFEATED BY THE COMPUTER';
         }
     }
 }
